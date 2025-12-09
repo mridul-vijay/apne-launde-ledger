@@ -40,6 +40,7 @@ export type Database = {
           id: string
           note: string | null
           to_user: string
+          transaction_date: string | null
           type: string
           user_id: string
         }
@@ -50,6 +51,7 @@ export type Database = {
           id?: string
           note?: string | null
           to_user: string
+          transaction_date?: string | null
           type: string
           user_id: string
         }
@@ -60,6 +62,7 @@ export type Database = {
           id?: string
           note?: string | null
           to_user?: string
+          transaction_date?: string | null
           type?: string
           user_id?: string
         }
