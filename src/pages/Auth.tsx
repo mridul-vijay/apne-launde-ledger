@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { Wallet, Users, ArrowLeftRight, ArrowLeft } from "lucide-react";
+import { Wallet, Users, ArrowLeftRight } from "lucide-react";
 import { z } from "zod";
 
 const MEMBERS = ["Arun", "Vivek", "Nidit", "Kunal", "Manan", "Amit", "Akshit", "Shan", "Pratik", "Parikshit", "Mridul"];
@@ -20,17 +20,12 @@ const authSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-const emailSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
-});
-
-type AuthMode = "signin" | "signup" | "forgot";
+type AuthMode = "signin" | "signup";
 
 const Auth = () => {
   const [mode, setMode] = useState<AuthMode>("signin");
   const [alId, setAlId] = useState("");
   const [password, setPassword] = useState("");
-  const [resetEmail, setResetEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -123,104 +118,6 @@ const Auth = () => {
     }
   };
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // For this app, we use synthetic emails. Show a simulated response.
-    const selectedMember = MEMBERS.find(m => 
-      resetEmail.toLowerCase().includes(m.toLowerCase())
-    );
-
-    if (!selectedMember) {
-      toast({
-        title: "Member Not Found",
-        description: "Please enter your AL ID name (e.g., Arun) to reset password.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setLoading(true);
-
-    // Simulate sending reset email
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Reset Link Sent!",
-      description: `A password reset link has been sent to ${selectedMember}'s registered contact.`,
-    });
-    
-    setResetEmail("");
-    setMode("signin");
-    setLoading(false);
-  };
-
-  if (mode === "forgot") {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
-        <div className="w-full max-w-md space-y-8 animate-fade-in">
-          {/* Logo */}
-          <div className="text-center space-y-4">
-            <div className="mx-auto w-20 h-20 rounded-2xl bg-primary flex items-center justify-center shadow-glow">
-              <Wallet className="w-10 h-10 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-extrabold text-foreground">Apne Launde</h1>
-              <p className="text-lg font-semibold text-primary">Finance Tracker</p>
-            </div>
-          </div>
-
-          {/* Forgot Password Card */}
-          <Card className="border-2 shadow-card">
-            <CardHeader className="text-center pb-4">
-              <CardTitle className="text-xl">Reset Password</CardTitle>
-              <CardDescription>
-                Enter your AL ID to receive a reset link
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleForgotPassword} className="space-y-5">
-                <div className="space-y-2">
-                  <Label htmlFor="resetEmail" className="text-sm font-semibold">
-                    Your AL ID Name
-                  </Label>
-                  <Input
-                    id="resetEmail"
-                    type="text"
-                    value={resetEmail}
-                    onChange={(e) => setResetEmail(e.target.value)}
-                    placeholder="e.g., Arun"
-                    className="h-12 rounded-xl border-2 font-medium"
-                    required
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-12 rounded-xl text-base font-bold shadow-soft hover:shadow-card transition-all"
-                >
-                  {loading ? "Sending..." : "Send Reset Link"}
-                </Button>
-              </form>
-
-              <div className="mt-6 text-center">
-                <button
-                  type="button"
-                  onClick={() => setMode("signin")}
-                  className="text-sm text-muted-foreground hover:text-primary font-medium transition-colors flex items-center gap-1 mx-auto"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Back to Sign In
-                </button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
       <div className="w-full max-w-md space-y-8 animate-fade-in">
@@ -304,7 +201,7 @@ const Auth = () => {
               </Button>
             </form>
 
-            <div className="mt-6 space-y-3 text-center">
+            <div className="mt-6 text-center">
               <button
                 type="button"
                 onClick={() => {
@@ -317,16 +214,6 @@ const Auth = () => {
                   ? "Already have an account? Sign In"
                   : "New here? Create Account"}
               </button>
-              
-              {mode === "signin" && (
-                <button
-                  type="button"
-                  onClick={() => setMode("forgot")}
-                  className="block w-full text-sm text-muted-foreground hover:text-primary font-medium transition-colors"
-                >
-                  Forgot Password?
-                </button>
-              )}
             </div>
           </CardContent>
         </Card>
